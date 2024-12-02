@@ -14,6 +14,7 @@ func main() {
 	var distances []int
 	var difference int = 0
 	var sumDistances int = 0
+	var similarity int = 0
 
 
 	file, err := os.Open("input.txt")
@@ -59,5 +60,22 @@ func main() {
 	//	fmt.Println(sumDistances)
 	}
 	//fmt.Println(distances)
-	fmt.Println("\n",sumDistances)
+	fmt.Println("Sum of the distances is: ",sumDistances)
+
+	freq := make(map[int]int)
+
+	for _,num := range (list2){
+		freq[num] = freq[num]+1
+	}
+	fmt.Println("Frequency of the Array is : ", freq)
+
+	
+	for i:= range list1 {
+		similarity = similarity + (list1[i] * freq[list1[i]])
+		
+	}
+
+	fmt.Println("Similarity Score is: ",similarity)
 }
+
+
