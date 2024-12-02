@@ -31,10 +31,10 @@ func main() {
 		if err != nil {
 			break // Reached end of file
 		}
-		fmt.Println(line)
+		//fmt.Println(line)
 
 		lineSlice := strings.Fields(line)
-		fmt.Println(lineSlice)
+		//fmt.Println(lineSlice)
 
 		num1, err := strconv.Atoi(lineSlice[0])
 		num2, err := strconv.Atoi(lineSlice[1])
@@ -43,8 +43,8 @@ func main() {
 		list2 = append(list2, num2)
 	}
 
-	fmt.Println(list1)
-	fmt.Println(list2)
+	//fmt.Println(list1)
+	//fmt.Println(list2)
 
 	sort.Ints(list1)
 	sort.Ints(list2)
@@ -58,6 +58,6 @@ func main() {
 		sumDistances = sumDistances + difference
 	//	fmt.Println(sumDistances)
 	}
-	fmt.Println(distances)
+	//fmt.Println(distances)
 	fmt.Println("\n",sumDistances)
 }
