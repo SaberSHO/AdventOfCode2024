@@ -54,6 +54,7 @@ func main() {
 		}
 		if grid[tryNewPos.Y][tryNewPos.X] == "#" {
 			curDir = nextDir(curDir)
+			continue
 		}
 		allVisited = append(allVisited, curPos)
 		curPos = moveInDirection(curPos, curDir)
@@ -61,27 +62,57 @@ func main() {
 	}
 
 	//we only want unique points
+	allVisitedUnique := []Point{}
 	visited := map[Point]bool{}
 	for _, v := range allVisited {
-		visited[v] = true
+		if !visited[v] {
+			visited[v] = true
+			allVisitedUnique = append(allVisitedUnique, v)
+		}
 	}
 
-	fmt.Println("Visited: ", len(visited))
+	fmt.Println("Visited: ", len(allVisitedUnique))
 
 	//Part 2
-	//Take the visited path from above. Add an obstable somewhere along the path. run through the visit algo again, but this time check if tryNewPos is already visited. if it is, we are looping. break and increment
-
-	for visit := range visited {
+	//Take the visited path from above. Add an obstable somewhere along the path. run through the visit algo again, but this time check if tryNewPos is already visited in the same dir. if it is, we are looping. break and increment
+	looping := 0
+	for visit := range allVisitedUnique {
 		//ignore starting position
-		if visit == startingPos {
+		if allVisitedUnique[visit] == startingPos {
 			continue
 		}
-		tempGrid := make([][]string, len(grid))
-		copy(tempGrid, grid)
-		tempGrid[visit.Y][visit.X] = "O"
-		fmt.Println(tempGrid)
+		tempGrid := copyStringMatrix(grid)
+		//fmt.Println(allVisitedUnique[visit])
+		tempGrid[allVisitedUnique[visit].Y][allVisitedUnique[visit].X] = "O"
+		//fmt.Println(tempGrid)
+		curPos = startingPos
+		curDir := Direction{0, -1}
+		pointAndDirectionVisited := map[Point][]Direction{}
+		for {
+			tryNewPos := moveInDirection(curPos, curDir)
+			if tryNewPos.X < 0 || tryNewPos.Y < 0 || tryNewPos.X >= len(grid[0]) || tryNewPos.Y >= len(grid) {
+				break
+			}
+			if tempGrid[tryNewPos.Y][tryNewPos.X] == "O" {
+				curDir = nextDir(curDir)
+				continue
+			}
+			if tempGrid[tryNewPos.Y][tryNewPos.X] == "#" {
+				curDir = nextDir(curDir)
+				continue
+			}
+
+			if containsValue(pointAndDirectionVisited, curPos, curDir) {
+				looping += 1
+				break
+			}
+			pointAndDirectionVisited[curPos] = append(pointAndDirectionVisited[curPos], curDir)
+			curPos = moveInDirection(curPos, curDir)
+		}
 
 	}
+	fmt.Println(looping)
+
 }
 
 func findCharIndex(matrix [][]string, char string) Point {
@@ -119,4 +150,28 @@ func nextDir(currentDirection Direction) Direction {
 		return up
 	}
 	return Direction{0, 0}
+}
+
+func copyStringMatrix(matrix [][]string) [][]string {
+	newMatrix := make([][]string, len(matrix))
+	for i := range matrix {
+		newMatrix[i] = make([]string, len(matrix[i]))
+		copy(newMatrix[i], matrix[i])
+	}
+	return newMatrix
+}
+
+func containsValue(m map[Point][]Direction, key Point, value Direction) bool {
+	list, ok := m[key]
+	if !ok {
+		return false // Key not found in the map
+	}
+
+	for _, v := range list {
+		if v == value {
+			return true
+		}
+	}
+
+	return false
 }
