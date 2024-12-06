@@ -43,6 +43,7 @@ func main() {
 
 	//find starting point
 	curPos = findCharIndex(grid, "^")
+	startingPos := curPos
 
 	var allVisited []Point
 	for {
@@ -66,6 +67,21 @@ func main() {
 	}
 
 	fmt.Println("Visited: ", len(visited))
+
+	//Part 2
+	//Take the visited path from above. Add an obstable somewhere along the path. run through the visit algo again, but this time check if tryNewPos is already visited. if it is, we are looping. break and increment
+
+	for visit := range visited {
+		//ignore starting position
+		if visit == startingPos {
+			continue
+		}
+		tempGrid := make([][]string, len(grid))
+		copy(tempGrid, grid)
+		tempGrid[visit.Y][visit.X] = "O"
+		fmt.Println(tempGrid)
+
+	}
 }
 
 func findCharIndex(matrix [][]string, char string) Point {
